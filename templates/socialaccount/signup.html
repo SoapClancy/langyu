@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <section class="mb-4">
+                <div class="row wow fadeIn">
+                    <div class='col-10 justify-content-center container'>
+
+                        <h1>{% trans "Sign Up" %}</h1>
+
+                        <p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}您将会用您的
+                            {{ provider_name }} 账户来登陆
+                            {{ site_name }}。 请您完成以下表单以完成注册:{% endblocktrans %}</p>
+
+                        <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}"
+                                       value="{{ redirect_field_value }}"/>
+                            {% endif %}
+              <button class='btn btn-primary' type="submit">{% trans "Sign Up" %}</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+{% endblock %}

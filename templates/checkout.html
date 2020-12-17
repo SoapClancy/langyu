@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <main>
+        <div class="container wow fadeIn">
+            <h2 class="my-5 h2 text-center">联系方式和送货方式</h2>
+                    <h2 class="my-5 h2 text-center red-text">这是测试版网站。您可以体验网站一切功能，包括checkout，
+                    但是朗御Langyu不会实际给您备货或者配送。<a href="mailto:soapclancy@hotmail.com">报告bug</a> </h2>
+
+            <div class="row">
+                <div class="col-md-8 mb-4">
+                    <div class="card">
+                        <form method="POST" class="card-body">
+                            {% csrf_token %}
+
+                            <h3>联系方式</h3>
+                            <div class=''>
+                                <div class="d-inline-flex mt-3 mb-0 py-0">
+                                    <div class="md-form mr-4 my-0 py-0">
+                                        <input type='text' id='first_name'
+                                               name='first_name' class='form-control'/>
+                                        <label for="first_name">名字</label>
+                                    </div>
+
+                                    <div class="md-form my-0 py-0">
+                                        <input type='text' id='last_name'
+                                               name='last_name' class='form-control'/>
+                                        <label for="last_name">姓氏</label>
+                                    </div>
+                                </div>
+
+                                <div class="md-form">
+                                    <input type='text' id='email'
+                                           name='email' class='form-control'/>
+                                    <label for="email" class="">Email</label>
+                                </div>
+
+                                <div class="md-form">
+                                    <input type='text' id='phone'
+                                           name='phone' class='form-control'/>
+                                    <label for="phone" class="">电话号码</label>
+                                </div>
+
+                            </div>
+                            <hr>
+                            <h3>备注（选填）</h3>
+                            <div class="md-form">
+                                <textarea id='comments' name='comments' class='form-control'></textarea>
+                            </div>
+                            <hr>
+
+                            <h3>送货方式</h3>
+                            <div class="d-block my-3">
+                                {% for value, name in form.fields.payment_option.choices %}
+                                    <div class="custom-control custom-radio">
+                                        <input id="{{ name }}" name="payment_option" value="{{ value }}" type="radio"
+                                               class="custom-control-input" required>
+                                        <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <input name="old_cost_before_post" hidden id="id_old_cost_before_post" value={{ form.old_cost_before_post.value }} >
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">继续
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+                <div class="col-md-4 mb-4">
+                    {% include "order_snippet.html" %}
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock content %}

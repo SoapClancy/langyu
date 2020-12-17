@@ -1,0 +1,74 @@
+{% load static %}
+
+<html lang="zh-hans">
+<body>
+{% if not order.ordered %}
+    <h1>未下单成功，此PDF无效 </h1>
+{% endif %}
+<h1><img src="{% static "img/langyu_logo_small.png" %}" width="10" height="10" class="img-fluid flex-center" alt="">
+</h1>
+<p>
+    订单号： {{ order.order_id }}
+    <br>
+    <span class="secondary">
+        <br>
+{{ order.ordered_date|date:"M d, Y" }}
+</span>
+</p>
+
+<h3>顾客</h3>
+<p>
+    姓名：{{ order.first_name }} {{ order.last_name }}<br>
+    邮箱：{{ order.email }}<br>
+    电话号码：{{ order.phone }}<br>
+<hr>
+{% if order.paid %}
+    您的订单已支付成功，欢迎您下次光临朗御
+{% else %}
+    {% if order.pick_up_time %}
+        朗御Langyu期待您{{ order.pick_up_time }}时候的光临
+    {% else %}
+        朗御Langyu将会尽快为配送，您的配送地址是：<br>
+        {{ order.shipping_address.address }} <br>
+        {{ order.shipping_address.address_2 }} <br>
+        {{ order.shipping_address.post_code }} <br>
+    {% endif %}
+{% endif %}
+
+<h3>商品清单</h3>
+<table>
+    <thead>
+    <tr>
+        <th>商品名称</th>
+        <th>单价</th>
+        <th>数量</th>
+        <th>商品总价</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order_item in order.order_items.all %}
+        <tr class="row{% cycle "1" "2" %}">
+            <td class="">{{ order_item.item.name }}</td>
+            <td class="">£{{ order_item.item.price }}</td>
+            <td class="">{{ order_item.quantity }}</td>
+            <td class="">£{{ order_item.get_final_price }}</td>
+        </tr>
+    {% endfor %}
+    <tr class="total">
+        <td colspan="3">总价</td>
+        <td class="">£{{ order.get_total }}</td>
+    </tr>
+    </tbody>
+</table>
+{% if order.comments %}
+    <hr>
+    <p>备注：{{ order.comments }}</p>
+    <hr>
+{% endif %}
+
+<span class="{% if order.paid %}paid{% else %}pending{% endif %}">
+{% if order.paid %}已支付{% else %}待支付{% endif %}
+
+</span>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <main>
+        <div class="container wow fadeIn">
+            <h2 class="my-5 h2 text-center">{% if 'pick_up' in request.get_full_path %} 取货时间 {% else %}
+                送货地址 {% endif %}</h2>
+            <div class="row">
+                <div class="col-md-8 mb-4">
+                    <div class="card">
+                        <form method="POST" class="card-body">
+                            {% csrf_token %}
+                            {% if 'pick_up' in request.get_full_path %}
+
+                                <div class=''>
+                                    <div class="md-form">
+                                        <input type="text" id='id_pick_up_time'
+                                               name='pick_up_time' class='form-control'/>
+                                        {#                                                                                {{ form.pick_up_time }}#}
+                                        {#                                        <input type="text" id="picker" class="form-control">#}
+                                        <script>
+                                            $(function () {
+                                                $("#id_pick_up_time").datetimepicker({
+                                                        timepicker: true,
+                                                        datepicker: true,
+                                                        format: 'Y-m-d H:i',
+                                                        allowTimes: ['10:00', '11:00', '12:00',
+                                                            '13:00', '14:00', '15:00',
+                                                            '16:00', '17:00', '18:00',
+                                                            '19:00', '20:00', '21:00',],
+                                                        yearStart: 2020,
+                                                        yearEnd: 2025,
+                                                        lang: 'id',
+                                                        mask: true,
+                                                        i18n: {
+                                                            month: ['一月', '二月', '三月',
+                                                                '四月', '五月', '六月',
+                                                                '七月', '八月', '九月',
+                                                                '十月', '十一月', '十二月'],
+                                                            dayOfWeek: ['周一', '周二', '周三',
+                                                                '周四', '周五', '周六', '周天']
+                                                        }
+                                                    }
+                                                );
+                                            });
+                                        </script>
+
+                                    </div>
+
+                                </div>
+                            {% else %}
+                                <div class='hideable_shipping_form'>
+                                    <div class="md-form mb-5">
+                                        <input type='text' id='shipping_address'
+                                               name='shipping_address' class='form-control'/>
+                                        <label for="shipping_address" class="">地址(第一行)，必填</label>
+                                    </div>
+
+                                    <div class="md-form mb-5">
+                                        <input type='text' id='shipping_address_2'
+                                               name='shipping_address_2' class='form-control'/>
+                                        <label for="shipping_address_2" class="">地址(第二行)，必填</label>
+                                    </div>
+
+                                    <div class="md-form mb-5">
+                                        <label for="shipping_post_code">邮编，必填</label>
+                                        <input type='text' id='shipping_post_code' name='shipping_post_code'
+                                               class='form-control'/>
+                                        <div class="invalid-feedback">
+                                            请正确填写邮编
+                                        </div>
+                                    </div>
+
+
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" name="set_default_shipping"
+                                               id="set_default_shipping">
+                                        <label class="custom-control-label"
+                                               for="set_default_shipping">将输入地址作为默认的收货地址（下次下单可以使用）</label>
+                                    </div>
+
+                                </div>
+                                {% if default_shipping_address %}
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input"
+                                               name="use_default_shipping"
+                                               id="use_default_shipping">
+                                        <label class="custom-control-label"
+                                               for="use_default_shipping">
+                                            使用默认地址{{ default_shipping_address.address|truncatechars:32 }}</label>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            <input name="old_cost_before_post" hidden id="id_old_cost_before_post"
+                                   value={{ form.old_cost_before_post.value }}>
+                            <br>
+{#                        <span class="col-sm-9"></span>#}
+                            {{ form.captcha }}
+                            <hr class="mb-4">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">确认下单</button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+                <div class="col-md-4 mb-4">
+                    {% include "order_snippet.html" %}
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock content %}
+
+
+{% block extra_scripts %}
+    <script>
+        var hideable_shipping_form = $('.hideable_shipping_form');
+
+        var use_default_shipping = document.querySelector("input[name=use_default_shipping]");
+
+        use_default_shipping.addEventListener('change', function () {
+            if (this.checked) {
+                hideable_shipping_form.hide();
+            } else {
+                hideable_shipping_form.show();
+            }
+        })
+
+
+    </script>
+{% endblock extra_scripts %}

@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <main class="mt-2 pt-1">
+        <div class="container dark-grey-text mt-5">
+
+            <!--Grid row-->
+            <div class="row wow fadeIn container d-inline-flex justify-content-center align-items-center align-content-center mx-0">
+
+                <!--Grid column-->
+                <div class="col-md-6 text-center align-content-center align-items-center">
+
+                    <div class="item">
+                        {% if object.image %}
+                            {% load thumbnail %}
+                            {% thumbnail object.image "400" crop="center" as im %}
+                                <img src="{{ im.url }}" class="img-fluid " alt>
+                            {% endthumbnail %}
+                        {% else %}
+                            <img src="{% static "img/no_image.png" %}" class="img-fluid" alt>
+
+                        {% endif %}
+
+                    </div>
+                    <div class="break"></div>
+                    <div class="item mb-0 pb-0">
+                        <a class="nav-link waves-effect waves-light langyu_black-text clearfix mb-0 pb-0"
+                           href={{ request.META.HTTP_REFERER }}><i
+                                class="fas fa-fast-backward"></i> 返回前一页 </a>
+                    </div>
+
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <!--Content-->
+                <div class="p-4 col-md-6 align-content-center align-items-center">
+                    <div class="mb-3">
+                        <a href={{ object.sub_category.get_absolute_url }}>
+                                <span class="badge purple mr-1">{{ object.sub_category.main_category.get_name_display }} -
+                                    {{ object.sub_category.get_name_display }}</span>
+                        </a>
+                    </div>
+                    {% if object.label.count == 1 and object.label.first.name == 'Normal' %}
+                    {% else %}
+                        <div class="mb-3">
+                                     <span class="align-self-center ml-0 mr-auto d-inline-flex">
+                                        {% for this_label in object.label.all %}
+                                            {% with this_label.name as label_name %}
+                                                {% if label_name == 'Sale' %}
+                                                    <a href="/?o=&label=2&price__gte=&price__lte=&name=">
+                                                    <span class="badge badge-pill warning-color mr-1"> 打折 </span>
+                                                                                    </a>
+                                                {% elif label_name == 'New' %}
+                                                    <a href="/?o=&label=3&price__gte=&price__lte=&name=">
+
+                                                    <span class="badge badge-pill info-color mr-1"> 新品 </span>
+                                                                </a>
+
+                                                {% elif label_name == 'Populate' %}
+                                                    <a href="/?o=&label=4&price__gte=&price__lte=&name=">
+
+                                                    <span class="badge badge-pill danger-color mr-1"> 热销 </span>
+                                                                                                      </a>
+
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </span>
+
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <span class="h3 font-weight-bolder">{{ object.name }}</span>
+                    </div>
+
+                    <p class="lead">
+                        {% if object.discount_price %}
+                            <span class="mr-1"><del>£{{ object.price }}</del></span>
+                            <span class="">£{{ object.discount_price }}</span>
+                        {% else %}
+                            <span>£{{ object.price }}</span>
+                        {% endif %}
+                    </p>
+                    <div class="mb-3">
+                        {% if object.available_number > 0 %}
+                            <span class="langyu_black-text font-small"> 库存：有货  </span>
+                        {% else %}
+                            <span class="langyu_red-text font-small"> 库存：无货  </span>
+                        {% endif %}
+                    </div>
+
+                    <p class="lead font-weight-lighter">描述：
+                        {% if  object.description %}
+                            {{ object.description }}
+                        {% else %}
+                            无
+                        {% endif %}
+                    </p>
+
+
+                    <form action="" method="post" onkeydown="if(event.keyCode===13){return false;}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <button type="submit"
+                                class="btn btn-primary btn-md my-0 ml-0 d-inline-flex justify-content-center">
+                                <span class="align-self-center mr-1"><i
+                                        class="fas fa-shopping-cart ml-1 input-group"></i></span>
+                            <span class="align-self-center ml-1">加入购物车</span>
+                        </button>
+
+                    </form>
+
+
+                </div>
+                <!--Content-->
+
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+
+            <!--Grid row-->
+
+            <!--Grid column-->
+
+            <div class="divider-new">
+
+                <h5 class="h5-responsive font-weight-bold  mx-3 text-center">“{{ object.sub_category }}”中最受欢迎的产品</h5>
+
+            </div>
+            <!-- Section: Products v.5 -->
+            <section id="products" class="pb-1 mx-auto" style="width: 66%">
+
+                <!-- Carousel Wrapper -->
+                <div id="multi-item-example" class="carousel slide carousel-multi-item justify-content-center"
+                     data-ride="carousel">
+
+                    <!-- Controls -->
+                    <div class="controls-top">
+
+                        <a class="btn-floating primary-color" href="#multi-item-example" data-slide="prev">
+
+                            <i class="fas fa-chevron-left"></i>
+
+                        </a>
+
+                        <a class="btn-floating primary-color" href="#multi-item-example" data-slide="next">
+
+                            <i class="fas fa-chevron-right"></i>
+
+                        </a>
+
+                    </div>
+                    <!-- Controls -->
+
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+
+                        <li class="primary-color" data-target="#multi-item-example" data-slide-to="0"
+                            class="active"></li>
+
+                        <li class="primary-color" data-target="#multi-item-example" data-slide-to="1"></li>
+
+                        <li class="primary-color" data-target="#multi-item-example" data-slide-to="2"></li>
+
+                    </ol>
+                    <!-- Indicators -->
+
+                    <!-- Slides -->
+                    <div class="carousel-inner text-center" role="listbox">
+
+                        <!-- First slide -->
+                        <div class="carousel-item active">
+                            <div class="d-inline-flex">
+                                {% for item in related_items_qs|slice:"0:3" %}
+                                    {% if item == None %}
+                                        Placeholder（品类商品目前小于9，所以还放不满这个widget）
+                                    {% else %}
+                                        <div class="col-md-4 mb-2 mt-1 {% if forloop.counter > 1 %} clearfix d-none d-md-block {% endif %} align-items-stretch">
+                                            <div class="card h-100 ">
+                                                <div class="view overlay zoom">
+                                                    <a href="{{ item.get_absolute_url }}">
+
+                                                        {% if item.image %}
+                                                            {% load thumbnail %}
+                                                            {% thumbnail item.image "240x167" crop="center" as im %}
+                                                                <img src="{{ im.url }}" class="img-fluid card-img-top">
+                                                            {% endthumbnail %}
+                                                        {% else %}
+                                                            <img src="{% static "img/no_image.png" %}"
+                                                                 class="img-fluid card-img-top">
+                                                        {% endif %}
+
+                                                    </a>
+                                                </div>
+                                                <div class="container card-body justify-content-center align-items-center mx-0 pt-1 align-content-center">
+                                                    <a href="" class="grey-text font-small pt-2 font-italic">
+                                                        {{ item.sub_category.main_category.get_name_display }} -
+                                                        {{ item.sub_category.get_name_display }}
+                                                    </a>
+
+                                                    <div class="mt-2 pb-2 align-items-center justify-content-center">
+                                                        <div class="mx-1 align-self-center">
+                                                            <a href="{{ item.get_absolute_url }}"
+                                                               class="dark-grey-text font-weight-bold">{{ item.name }}
+                                                            </a>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <h5 class="font-weight-bold blue-text">
+                                                        <strong>
+                                                            {% if item.discount_price %}
+                                                                <span><del>£{{ item.price }}</del></span>
+                                                                <span>£{{ item.discount_price }}</span>
+                                                            {% else %}
+                                                                £{{ item.price }}
+                                                            {% endif %}
+                                                        </strong>
+                                                    </h5>
+                                                    {% if item.available_number > 0 %}
+                                                        <span class="langyu_black-text font-small">
+                                                    库存：有货
+                                                </span>
+                                                    {% else %}
+                                                        <span class="langyu_red-text font-small">
+                                                    库存：无货
+                                                </span>
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="card-footer d-inline-flex">
+                                    <span class="align-self-center ml-0 mr-auto d-inline-flex">
+                                        {% for this_label in item.label.all %}
+                                            {% with this_label.name as label_name %}
+                                                {% if label_name == 'Sale' %}
+                                                    <span class="badge badge-pill warning-color mr-1"> 打折 </span>
+                                                {% elif label_name == 'New' %}
+                                                    <span class="badge badge-pill info-color mr-1"> 新品 </span>
+                                                {% elif label_name == 'Populate' %}
+                                                    <span class="badge badge-pill danger-color mr-1"> 热销 </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </span>
+                                                    <span class="align-self-center mr-0 ml-auto d-inline-flex">
+                                        <a class="" data-toggle="tooltip" data-placement="top"
+                                           href="{{ item.get_add_to_cart_url }}" title="加入购物车">
+
+                                            <i class="fas fa-cart-plus ml-3 langyu_black-text"></i></a>
+                                        </span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- First slide -->
+
+                        <!-- Second slide -->
+                        <div class="carousel-item">
+                            <div class="d-inline-flex">
+                                {% for item in related_items_qs|slice:"3:6" %}
+                                    <div class="col-md-4 mb-2 mt-1 {% if forloop.counter > 1 %}clearfix d-none d-md-block {% endif %} align-items-stretch">
+                                        {% if item == None %}
+                                            Placeholder（品类商品目前小于9，所以还放不满这个widget）
+                                        {% else %}
+                                            <div class="card h-100 ">
+                                                <div class="view overlay zoom">
+                                                    <a href="{{ item.get_absolute_url }}">
+
+                                                        {% if item.image %}
+                                                            {% load thumbnail %}
+                                                            {% thumbnail item.image "240x167" crop="center" as im %}
+                                                                <img src="{{ im.url }}" class="img-fluid card-img-top">
+                                                            {% endthumbnail %}
+                                                        {% else %}
+                                                            <img src="{% static "img/no_image.png" %}"
+                                                                 class="img-fluid card-img-top">
+                                                        {% endif %}
+
+                                                    </a>
+                                                </div>
+                                                <div class="container card-body justify-content-center align-items-center mx-0 pt-1 align-content-center">
+                                                    <a href="" class="grey-text font-small pt-2 font-italic">
+                                                        {{ item.sub_category.main_category.get_name_display }} -
+                                                        {{ item.sub_category.get_name_display }}
+                                                    </a>
+
+                                                    <div class="mt-2 pb-2 align-items-center justify-content-center">
+                                                        <div class="mx-1 align-self-center">
+                                                            <a href="{{ item.get_absolute_url }}"
+                                                               class="dark-grey-text font-weight-bold">{{ item.name }}
+                                                            </a>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <h5 class="font-weight-bold blue-text">
+                                                        <strong>
+                                                            {% if item.discount_price %}
+                                                                <span><del>£{{ item.price }}</del></span>
+                                                                <span>£{{ item.discount_price }}</span>
+                                                            {% else %}
+                                                                £{{ item.price }}
+                                                            {% endif %}
+                                                        </strong>
+                                                    </h5>
+                                                    {% if item.available_number > 0 %}
+                                                        <span class="langyu_black-text font-small">
+                                                    库存：有货
+                                                </span>
+                                                    {% else %}
+                                                        <span class="langyu_red-text font-small">
+                                                    库存：无货
+                                                </span>
+                                                    {% endif %}
+
+                                                </div>
+
+                                                <div class="card-footer d-inline-flex">
+                                    <span class="align-self-center ml-0 mr-auto d-inline-flex">
+                                        {% for this_label in item.label.all %}
+                                            {% with this_label.name as label_name %}
+                                                {% if label_name == 'Sale' %}
+                                                    <span class="badge badge-pill warning-color mr-1"> 打折 </span>
+                                                {% elif label_name == 'New' %}
+                                                    <span class="badge badge-pill info-color mr-1"> 新品 </span>
+                                                {% elif label_name == 'Populate' %}
+                                                    <span class="badge badge-pill danger-color mr-1"> 热销 </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </span>
+                                                    <span class="align-self-center mr-0 ml-auto d-inline-flex">
+                                        <a class="" data-toggle="tooltip" data-placement="top"
+                                           href="{{ item.get_add_to_cart_url }}" title="加入购物车">
+
+                                            <i class="fas fa-cart-plus ml-3 langyu_black-text"></i></a>
+                                        </span>
+                                                </div>
+
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- Second slide -->
+
+                        <!-- Third slide -->
+                        <div class="carousel-item">
+                            <div class="d-inline-flex">
+                                {% for item in related_items_qs|slice:"6:9" %}
+                                    <div class="col-md-4 mb-2 mt-1 {% if forloop.counter > 1 %}clearfix d-none d-md-block {% endif %} align-items-stretch">
+                                        {% if item == None %}
+                                            Placeholder（品类商品目前小于9，所以还放不满这个widget）
+                                        {% else %}
+                                            <div class="card h-100 ">
+                                                <div class="view overlay zoom">
+                                                    <a href="{{ item.get_absolute_url }}">
+
+                                                        {% if item.image %}
+                                                            {% load thumbnail %}
+                                                            {% thumbnail item.image "240x167" crop="center" as im %}
+                                                                <img src="{{ im.url }}" class="img-fluid card-img-top">
+                                                            {% endthumbnail %}
+                                                        {% else %}
+                                                            <img src="{% static "img/no_image.png" %}"
+                                                                 class="img-fluid card-img-top">
+                                                        {% endif %}
+
+                                                    </a>
+                                                </div>
+                                                <div class="container card-body justify-content-center align-items-center mx-0 pt-1 align-content-center">
+                                                    <a href="" class="grey-text font-small pt-2 font-italic">
+                                                        {{ item.sub_category.main_category.get_name_display }} -
+                                                        {{ item.sub_category.get_name_display }}
+                                                    </a>
+
+                                                    <div class="mt-2 pb-2 align-items-center justify-content-center">
+                                                        <div class="mx-1 align-self-center">
+                                                            <a href="{{ item.get_absolute_url }}"
+                                                               class="dark-grey-text font-weight-bold">{{ item.name }}
+                                                            </a>
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                    <h5 class="font-weight-bold blue-text">
+                                                        <strong>
+                                                            {% if item.discount_price %}
+                                                                <span><del>£{{ item.price }}</del></span>
+                                                                <span>£{{ item.discount_price }}</span>
+                                                            {% else %}
+                                                                £{{ item.price }}
+                                                            {% endif %}
+                                                        </strong>
+                                                    </h5>
+                                                    {% if item.available_number > 0 %}
+                                                        <span class="langyu_black-text font-small">
+                                                    库存：有货
+                                                </span>
+                                                    {% else %}
+                                                        <span class="langyu_red-text font-small">
+                                                    库存：无货
+                                                </span>
+                                                    {% endif %}
+m
+                                                </div>
+
+                                                <div class="card-footer d-inline-flex">
+                                    <span class="align-self-center ml-0 mr-auto d-inline-flex">
+                                        {% for this_label in item.label.all %}
+                                            {% with this_label.name as label_name %}
+                                                {% if label_name == 'Sale' %}
+                                                    <span class="badge badge-pill warning-color mr-1"> 打折 </span>
+                                                {% elif label_name == 'New' %}
+                                                    <span class="badge badge-pill info-color mr-1"> 新品 </span>
+                                                {% elif label_name == 'Populate' %}
+                                                    <span class="badge badge-pill danger-color mr-1"> 热销 </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </span>
+                                                    <span class="align-self-center mr-0 ml-auto d-inline-flex">
+                                        <a class="" data-toggle="tooltip" data-placement="top"
+                                           href="{{ item.get_add_to_cart_url }}" title="加入购物车">
+
+                                            <i class="fas fa-cart-plus ml-3 langyu_black-text"></i></a>
+                                        </span>
+                                                </div>
+
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>                        <!-- Third slide -->
+
+                    </div>
+                    <!-- Slides -->
+
+                </div>
+                <!-- Carousel Wrapper -->
+
+            </section>
+            <!-- Section: Products v.5 -->
+
+            <!--Grid column-->
+
+
+            <!--Grid row-->
+
+            <!--Grid row-->
+            <div class="row wow fadeIn">
+
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-12 mb-4">
+
+                    <img src=""
+                         class="img-fluid" alt="">
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <img src=""
+                         class="img-fluid" alt="">
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-lg-4 col-md-6 mb-4">
+
+                    <img src=""
+                         class="img-fluid" alt="">
+
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+        </div>
+    </main>
+
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <main>
+        <div class="container wow fadeIn">
+            <h2 class="my-5 h2 text-center">{% if 'pick_up' in request.get_full_path %} 取货时间 {% else %}
+                订单已确认 {% endif %}</h2>
+            <div class="row">
+                <div class="">
+                    <div class="card">
+                        <div class="my-2 mx-4">
+                            <p class="clearfix">
+                                尊敬的{{ order.first_name }}，您的订单号是{{ order.order_id }}，
+                                一封确认邮件（langyu2020@gmail.com）和订单的PDF文档已发至您的邮箱{{ order.email }}。
+                                邮件中的“未支付”PDF文档仅作为下单证明。 标明“已支付”的PDF将在订单支付后发出。请注意，
+                                每个用户最多只能有3笔待支付的订单。没有收到email的话请检查垃圾邮件。如有问题请<a href={% url "item:contact_view" %}>联系我们</a>
+                            </p>
+                            <br>
+                            <p class="clearfix">
+                                {% if order.pick_up_time %}
+                                    朗御Langyu期待您{{ order.pick_up_time }}时候的光临
+                                {% else %}
+                                    朗御Langyu将会尽快为{{ order.shipping_address.address }}配送，您留的联系电话是：{{ order.phone }}
+                                {% endif %}
+                            </p>
+                            <p class="text-center">
+                                <a class='btn btn-primary float-right ml-2 align-self-center hidden_my'
+                                   href="/">返回主页</a>
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock content %}
+
+

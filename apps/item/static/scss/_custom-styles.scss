@@ -1,0 +1,25 @@
+// Your custom styles
+.langyu_black {
+  background-color: #495056 !important;
+}
+
+;
+
+.langyu_red {
+  background-color: #d60b14 !important;
+}
+
+;
+
+.langyu_black-text {
+  color: #495056 !important;
+}
+
+.langyu_red-text {
+  color: #d60b14 !important;
+}
+
+.breadcrumb .breadcrumb-item::before {
+  content: None;
+  padding-right: 0;
+}

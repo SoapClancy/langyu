@@ -1,0 +1,76 @@
+{% load static %}
+
+<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
+<script type="text/javascript" src="https://maps.google.com/maps/api/js"></script>
+<script type="text/javascript" src={% static 'js/jquery.datetimepicker.full.min.js' %}></script>
+
+<!-- Initializations -->
+<script type="text/javascript">
+    /* WOW.js init */
+
+    new WOW().init();
+    // Tooltips Initialization
+
+    $(function () {
+
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
+    $(function () {
+        $("#mdb-lightbox-ui").load("mdb-addons/mdb-lightbox-ui.html");
+    });
+
+    let slider = $("#calculatorSlider");
+    let reseller = $("#resellerEarnings");
+    let client = $("#clientPrice");
+    let percentageBonus = 30; // = 30%
+
+    let license = {
+        corpo: {
+            active: true,
+            price: 319,
+        },
+        dev: {
+            active: false,
+            price: 149,
+        },
+        priv: {
+            active: false,
+            price: 79,
+        }
+    };
+
+
+    slider.on('input change', e => {
+
+        if (license.priv.active) {
+
+            calculate(license.priv.price, $(e.target).val());
+        } else if (license.corpo.active) {
+
+            calculate(license.corpo.price, $(e.target).val());
+        } else if (license.dev.active) {
+
+            calculate(license.dev.price, $(e.target).val());
+        }
+    });
+
+    // Material Select Initialization
+    $(document).ready(function () {
+
+        $('.mdb-select').material_select();
+        $.fn.datetimepicker.defaults.language = 'zh-TW';
+        $(".button-collapse").sideNav();
+
+
+    });
+
+    // SideNav Initialization
+
+</script>

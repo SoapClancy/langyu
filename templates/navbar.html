@@ -1,0 +1,72 @@
+{% load static %}
+{% load cart_template_tags %}
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-light scrolling-navbar white">
+    <div class="container px-0 justify-content-between">
+
+        <!-- Brand -->
+        <a class="navbar-brand px-0" href="/">
+            <img src="{% static "img/langyu_logo.jpg" %}" width="230" class="img-fluid flex-center">
+        </a>
+
+        <!-- Collapse -->
+        <button class="navbar-toggler px-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-4"
+                aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon d-inline-flex align-self-center">
+                <i class="fas fa-bars langyu_black-text d-inline-flex align-self-center mr-0 ml-auto"></i>
+            </span>
+        </button>
+
+        <!-- Links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
+            <!-- Right -->
+            <ul class="navbar-nav mr-0 ml-auto nav-flex-icons">
+                <li class="nav-item mr-1">
+                    <a class="nav-link waves-effect waves-light langyu_black-text clearfix" href="#">
+                        <i class="china flag"> </i> 中文 </a>
+                </li>
+                <li class="nav-item mr-1">
+                    <a class="nav-link waves-effect waves-light langyu_black-text clearfix" href="#">
+                        <i class="uk flag"> </i> English (coming soon)</a>
+                </li>
+                <li class="nav-item mr-1">
+                    <a class="nav-link waves-effect waves-light langyu_black-text clearfix" href={% url "item:contact_view" %}><i
+                            class="fas fa-map-marked-alt"></i> 联系我们 </a>
+                </li>
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item mr-1">
+                        <a href="{% url 'order:order-summary' %}"
+                           class="nav-link waves-effect waves-light d-inline-flex">
+                            <span class="badge langyu_red z-depth-1 mr-1 d-inline-flex align-self-center"> {{ request.user|cart_item_count }} </span>
+                            <i class="fas fa-shopping-cart d-inline-flex align-self-center langyu_black-text"></i>
+                            <span class="clearfix d-inline-flex align-self-center langyu_black-text"> 购物车 </span>
+
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle waves-effect waves-light langyu_black-text pl-0"
+                       id="navbarDropdownMenuLink-4" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false"><i class="fas fa-user"></i> 账户 </a>
+
+                    <div class="dropdown-menu dropdown-menu-right dropdown-primary"
+                         aria-labelledby="navbarDropdownMenuLink-4">
+                        {% if request.user.is_authenticated %}
+{#                            <a class="dropdown-item waves-effect waves-light" href="#">历史订单</a>#}
+                            <a class="dropdown-item waves-effect waves-light" href="{% url 'account_logout' %}">登出</a>
+                        {% else %}
+                            <a class="dropdown-item waves-effect waves-light" href={% url 'account_login' %}>登陆</a>
+                            <a class="dropdown-item waves-effect waves-light" href="{% url 'account_signup' %}">注册</a>
+                        {% endif %}
+
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+</nav>

@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+{% load static %}
+{% load get_list_tag %}
+
+{% block content %}
+    <main>
+        <div class="container mt-1 pt-1">
+
+            <!--Navbar-->
+            <nav class="navbar navbar-expand-lg navbar-dark langyu_black mt-3 mb-5 d-flex">
+
+                <!-- Navbar brand -->
+                <!-- Collapse button -->
+                <div class="d-inline-flex align-items-center">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent1"
+                            aria-controls="navbarSupportedContent1" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon d-inline-flex align-self-center">
+                        <i class="far fa-caret-square-down d-inline-flex align-self-center"></i>
+
+                    </span>
+                    </button>
+                    <button class="navbar-toggler px-0 mx-0" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent1"
+                            aria-controls="navbarSupportedContent1" aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span class="d-inline-flex align-self-center">分类</span>
+                    </button>
+                </div>
+
+
+                <!-- Collapsible content -->
+                <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent1">
+                    <!-- Links -->
+                    <ul class="navbar-nav ml-0 mr-0">
+                        <li class="nav-item rounded waves-effect waves-classic">
+                            <a class="nav-link" href={% url "item:item-list" %}>全部
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        {% for this_main_category in main_categories %}
+                            <li class="nav-item dropdown ml-2">
+
+                                <a class="nav-link dropdown-toggle waves-effect waves-classic dropdown-danger"
+                                   id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false"> {{ this_main_category.get_name_display }} </a>
+
+                                <div class="dropdown-menu dropdown-menu-left primary-color white-text rounded"
+
+                                     aria-labelledby="navbarDropdownMenuLink1">
+                                    {% for this_sub_category in this_main_category.sub_categories.all %}
+                                        <a class="dropdown-item waves-effect waves-light white-text"
+                                           href={{ this_sub_category.get_absolute_url }}>{{ this_sub_category.get_name_display }}</a>
+                                    {% endfor %}
+
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item white-text"
+                                       href="{{ this_main_category.get_absolute_url }} ">所有{{ this_main_category.get_name_display }}</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+
+
+                    </ul>
+
+                    <form class="search-form" role="search">
+                        <div class="form-group md-form my-0 waves-light">
+                            <input type="text" class="form-control" id="id_name" name="name" aria-label="Search"
+                                   value={{ request.GET.name }}>
+                        </div>
+                    </form>
+                </div>
+
+            </nav>
+            <!--/.Navbar-->
+
+            <div class="row mt-1">
+
+                <!-- Sidebar -->
+                <div class="col-lg-2 col-md-6">
+
+                    <form method="get" class="" onkeydown="if(event.keyCode===13){return false;}">
+                        <!-- Grid row -->
+                        <div class="row form-group mb-2">
+
+                            <div class="col-md-6 col-lg-12 mb-1">
+
+                                <!-- Panel -->
+                                <h5 class="font-weight-bold dark-grey-text">
+                                    <strong>{{ filter.form.o.label_tag }} </strong>
+                                </h5>
+                                <div class="divider"></div>
+
+                                <div class="form-group">
+
+                                    <input class="form-check-input" name="o" type="radio" value=""
+                                           id="radio100" checked>
+
+                                    <label for="radio100" class="form-check-label dark-grey-text">默认</label>
+
+                                </div>
+                                <div class="form-group">
+
+                                    <input class="form-check-input" name="o" type="radio" value="-上架时间"
+                                           id="radio101" {% if request.GET.o == '-上架时间' %} checked {% endif %}>
+
+                                    <label for="radio101" class="form-check-label dark-grey-text">最新上架</label>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <input class="form-check-input" name="o" type="radio" id="radio102" value="价格"
+                                            {% if request.GET.o == '价格' %} checked {% endif %}>
+
+                                    <label for="radio102" class="form-check-label dark-grey-text">价格从低到高</label>
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <input class="form-check-input" name="o" type="radio" id="radio103" value="-价格"
+                                            {% if request.GET.o == '-价格' %} checked {% endif %}>
+
+                                    <label for="radio103" class="form-check-label dark-grey-text">价格从高到低</label>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="row form-group mb-2">
+                            <!-- Filter by label -->
+                            <div class="form-group col-md-6 col-lg-12 mb-1">
+
+                                <h5 class="font-weight-bold dark-grey-text">
+                                    <strong>{{ filter.form.label.label_tag }}</strong></h5>
+
+                                <div class="divider"></div>
+                                <!-- checkbox group -->
+
+
+                                <div class="form-group ml-1">
+
+                                    <input class="form-check-input" name="label" type="checkbox" id="checkbox3"
+                                           value="3"
+                                            {% if '3' in request.GET|get_list:'label' or 'label' not in request.GET %}
+                                           checked {% endif %}>
+
+                                    <label for="checkbox3" class="form-check-label dark-grey-text">新品</label>
+
+                                </div>
+
+                                <div class="form-group ml-1">
+
+                                    <input class="form-check-input" name="label" type="checkbox" id="checkbox4"
+                                           value="4"
+                                            {% if '4' in request.GET|get_list:'label' or 'label' not in request.GET %}
+                                           checked {% endif %}>
+
+                                    <label for="checkbox4" class="form-check-label dark-grey-text">热销</label>
+
+                                </div>
+
+                                <div class="form-group ml-1">
+
+                                    <input class="form-check-input" name="label" type="checkbox" id="checkbox2"
+                                           value="2"
+                                            {% if '2' in request.GET|get_list:'label' or 'label' not in request.GET %}
+                                           checked {% endif %}>
+
+                                    <label for="checkbox2" class="form-check-label dark-grey-text">打折</label>
+
+                                </div>
+
+                                <div class="form-group ml-1">
+
+                                    <input class="form-check-input" name="label" type="checkbox" id="checkbox1"
+                                           value="1"
+                                            {% if '1' in request.GET|get_list:'label' or 'label' not in request.GET %}
+                                           checked {% endif %}>
+
+                                    <label for="checkbox1" class="form-check-label dark-grey-text">其它</label>
+
+                                </div>
+
+                                <!-- checkbox group -->
+                            </div>
+                        </div>
+                        <!-- Filter by category -->
+                        <!-- Grid row -->
+
+                        <!-- Grid row -->
+                        <div class="row form-group mb-2">
+
+                            <!-- Filter by price -->
+                            <div class="col-md-6 col-lg-12 mb-1">
+
+                                <h5 class="font-weight-bold dark-grey-text"><strong>价格</strong></h5>
+
+                                <div class="divider"></div>
+
+
+                                <input type="number" aria-label="min_p" class="form-control ml-0 mr-2 mb-2"
+                                       id="id_price__gte" name="price__gte"
+                                       placeholder= {% if 'price__gte' not in request.GET or request.GET.price__gte == '' %} "不低于"
+                                       {% else %} {{ request.GET.price__gte }} {% endif %}
+                                       value="{{ request.GET.price__gte }}"
+                                       oninput="if(value<0)value=0">
+
+
+                                <input type="number" aria-label="max_p" class="form-control mr-0 mr-2"
+                                       id="id_price__lte" name="price__lte"
+                                       placeholder={% if 'price__lte' not in request.GET or request.GET.price__lte == '' %} "不高于"
+                                       {% else %} {{ request.GET.price__lte }} {% endif %}
+                                       value="{{ request.GET.price__lte }}"
+                                >
+
+                                <!-- Grid row -->
+
+                            </div>
+                            <!-- Filter by price -->
+
+                        </div>
+                        <input type="hidden" class="form-control" id="id_name" name="name" placeholder="搜索"
+                               aria-label="Search" value={{ request.GET.name }}>
+                        <!-- Grid row -->
+                        <button class="btn-save btn btn-primary btn-sm ml-0 mt-2 " type="submit"
+                                id="order_filter"></button>
+
+                    </form>
+                    <script>
+                        window.onload = function () {
+                            function get_innerText() {
+                                if (document.getElementById("bi-3")) {
+                                    return document.getElementById("bi-3").innerText;
+                                } else if (document.getElementById("bi-2")) {
+                                    return document.getElementById("bi-2").innerText;
+                                } else {
+                                    return document.getElementById("bi-1").innerText;
+                                }
+                            }
+
+
+                            $("#id_name").attr("placeholder", "在“" + get_innerText() + "”中搜索");
+                            if (document.getElementById("bi-4")) {
+                                $("#order_filter").text("搜索“{{ request.GET.name }}”的排序和筛选");
+
+                            } else {
+                                $("#order_filter").text("“" + get_innerText() + "”的排序和筛选");
+
+                            }
+                        }
+
+                    </script>
+                </div>
+                <!-- Sidebar -->
+
+                <!-- Content -->
+                <div class="col-lg-10 col-md-6">
+                    <!--Section: Products v.3-->
+                    <section class="section text-center mb-4">
+                        <div class="mt-0 pt-0">
+                            <nav aria-label="breadcrumb mt-0 pt-0" class="mt-0 pt-0">
+                                <ol class="breadcrumb white mt-0 pt-0">
+                                    <li class="breadcrumb-item">
+                                        <a class="black-text" href="{% url "item:item-list" %}" id="bi-1">全部</a>
+                                    </li>
+                                    {% for this_main_category in main_categories %}
+                                        {% if this_main_category.slug in request.path %}
+                                            <li class="breadcrumb-item px-0 mx-0">
+                                                <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                                                <a class="black-text" id="bi-2"
+                                                   href={{ this_main_category.get_absolute_url }}>
+                                                    {{ this_main_category.get_name_display }}</a>
+                                            </li>
+                                        {% endif %}
+                                        {% for this_sub_category in this_main_category.sub_categories.all %}
+                                            {% if this_sub_category.slug in request.path %}
+
+                                                <li class="breadcrumb-item px-0 mx-0">
+                                                    <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+
+                                                    <a class="black-text" id="bi-3"
+                                                       href={{ this_sub_category.get_absolute_url }}>
+                                                        {{ this_sub_category.get_name_display }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% if request.GET.name %}
+                                        <li class="breadcrumb-item px-0 mx-0">
+                                            <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                                            <a class="black-text" href="" id="bi-4">
+                                                名称包含：“{{ request.GET.name }}”</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if  request.GET.label or request.GET.o or request.GET.price_gte or request.GET.price_lte %}
+                                        {% if request.GET.name and not request.GET.o and not request.GET.price_gte and not request.GET.price_lte %}
+                                        {% else %}
+                                            <li class="breadcrumb-item px-0 mx-0">
+                                                <i class="fas fa-angle-double-right mx-2" aria-hidden="true"></i>
+                                                <a class="black-text" href="" id="bi-5">
+                                                    排序和筛选的结果</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                </ol>
+                            </nav>
+
+                        </div>
+
+                        <div class="row wow fadeIn container justify-content-start align-items-stretch mx-0">
+                            {% if filter.qs.count == 0 %}
+                                <h4>未查询到符合条件的商品</h4>
+                            {% endif %}
+                            {% for item in filter_qs_paged %}
+                                <div class="col-lg-3 col-md-12 col-sm-6 mb-4">
+
+                                    <div class="card h-100">
+                                        <div class="view overlay zoom">
+                                            <a href="{{ item.get_absolute_url }}">
+
+                                                {% if item.image %}
+                                                    {% load thumbnail %}
+                                                    {% thumbnail item.image "240x167" crop="center" as im %}
+                                                        <img src="{{ im.url }}" class="img-fluid card-img-top">
+                                                    {% endthumbnail %}
+                                                {% else %}
+                                                    <img src="{% static "img/no_image.png" %}"
+                                                         class="img-fluid card-img-top">
+                                                {% endif %}
+
+                                            </a>
+                                        </div>
+                                        <div class="container card-body justify-content-start align-items-center mx-0 pt-1 align-content-center">
+                                            <a href="" class="grey-text font-small pt-2 font-italic">
+                                                {{ item.sub_category.main_category.get_name_display }} -
+                                                {{ item.sub_category.get_name_display }}
+                                            </a>
+
+                                            <div class="mt-2 pb-2 align-items-center justify-content-center">
+                                                <div class="mx-1 align-self-center">
+                                                    <a href="{{ item.get_absolute_url }}"
+                                                       class="dark-grey-text font-weight-bold">{{ item.name }}
+                                                    </a>
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <h5 class="font-weight-bold blue-text">
+                                                <strong>
+                                                    {% if item.discount_price %}
+                                                        <span><del>£{{ item.price }}</del></span>
+                                                        <span>£{{ item.discount_price }}</span>
+                                                    {% else %}
+                                                        £{{ item.price }}
+                                                    {% endif %}
+                                                </strong>
+                                            </h5>
+                                            {% if item.available_number > 0 %}
+                                                <span class="langyu_black-text font-small">
+                                                    库存：有货
+                                                </span>
+                                            {% else %}
+                                                <span class="langyu_red-text font-small">
+                                                    库存：无货
+                                                </span>
+                                            {% endif %}
+
+                                        </div>
+
+                                        <div class="card-footer d-inline-flex">
+                                    <span class="align-self-center ml-0 mr-auto d-inline-flex">
+                                        {% for this_label in item.label.all %}
+                                            {% with this_label.name as label_name %}
+                                                {% if label_name == 'Sale' %}
+                                                    <span class="badge badge-pill warning-color mr-1"> 打折 </span>
+                                                {% elif label_name == 'New' %}
+                                                    <span class="badge badge-pill info-color mr-1"> 新品 </span>
+                                                {% elif label_name == 'Populate' %}
+                                                    <span class="badge badge-pill danger-color mr-1"> 热销 </span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% endfor %}
+                                    </span>
+                                            <span class="align-self-center mr-0 ml-auto d-inline-flex">
+                                        <a class="" data-toggle="tooltip" data-placement="top"
+                                           href="{{ item.get_add_to_cart_url }}" title="加入购物车">
+
+                                            <i class="fas fa-cart-plus ml-3 langyu_black-text"></i></a>
+                                        </span>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </section>
+                    <!--Section: Products v.3-->
+
+
+                    <!-- Products Grid -->
+
+
+                    <!-- Grid row -->
+                    {% if filter_qs_paged.has_other_pages %}
+
+                        <div class="row justify-content-center mb-4">
+
+                            <!-- Pagination -->
+                            <nav class="mb-4">
+
+                                <ul class="pagination pagination-circle pg-blue mb-0">
+
+                                    <!-- First -->
+                                    <li class="page-item clearfix d-none d-md-block {% if filter_qs_paged.number == 1 %} disabled {% endif %}">
+                                        <a class="page-link waves-effect waves-light"
+                                           href="{% relative_url '1' 'page' request.GET.urlencode %}">首页
+                                        </a>
+                                    </li>
+
+                                    <!-- Arrow left -->
+                                    {% if filter_qs_paged.has_previous %}
+
+                                        <li class="page-item">
+
+                                            <a class="page-link waves-effect waves-light" aria-label="Previous"
+                                               href="{% relative_url filter_qs_paged.previous_page_number 'page' request.GET.urlencode %}">
+                                                <span aria-hidden="true">«</span>
+                                                <span aria-hidden="true"
+                                                      class="page-item">{{ filter_qs_paged.previous_page_number }}</span>
+                                                <span class="sr-only">前一页</span>
+
+                                            </a>
+
+                                        </li>
+                                    {% endif %}
+
+                                    <!-- Numbers -->
+
+                                    <li class="page-item active">
+                                        <a class="page-link waves-effect waves-light"
+                                           href="{% relative_url filter_qs_paged.number 'page' request.GET.urlencode %}">{{ filter_qs_paged.number }}
+                                            <span class="sr-only">(当前页)</span>
+                                        </a>
+                                    </li>
+
+                                    <!-- Arrow right -->
+                                    {% if filter_qs_paged.has_next %}
+
+                                        <li class="page-item">
+
+                                            <a class="page-link waves-effect waves-light" aria-label="Next"
+                                               href="{% relative_url filter_qs_paged.next_page_number 'page' request.GET.urlencode %}">
+                                                <span aria-hidden="true"
+                                                      class="page-item">{{ filter_qs_paged.next_page_number }}</span>
+                                                <span aria-hidden="true">»</span>
+                                                <span class="sr-only">下一页</span>
+
+                                            </a>
+
+                                        </li>
+                                    {% endif %}
+                                    <!-- First -->
+                                    <li class="page-item clearfix d-none d-md-block {% if not filter_qs_paged.has_next %} disabled {% endif %}">
+                                        <a class="page-link waves-effect waves-light"
+                                           href="{% relative_url filter_qs_paged.paginator.num_pages 'page' request.GET.urlencode %}">末页</a>
+
+                                    </li>
+
+                                </ul>
+
+                            </nav>
+                            <!-- Pagination -->
+
+                        </div>
+                    {% endif %}
+                    <!-- Grid row -->
+
+                    <!-- Products Grid -->
+
+                </div>
+                <!-- Content -->
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock content %}
+
+

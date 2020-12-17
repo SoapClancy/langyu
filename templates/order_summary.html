@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <main>
+        <div class="container">
+
+            <div class="table-responsive text-nowrap">
+                <h2>订单小结</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">商品名称（点击可进入商品页）</th>
+                        <th scope="col">单价</th>
+                        <th scope="col">数量</th>
+                        <th scope="col">商品总价</th>
+                        <th scope="col"></th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order_item in object.order_items.all %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td><a href={{ order_item.item.get_absolute_url }}>{{ order_item.item.name }}</a></td>
+                            <td>
+                                {% if order_item.item.discount_price %}
+                                    £{{ order_item.item.discount_price }}
+                                {% else %}
+                                    £{{ order_item.item.price }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'order:remove-single-item-from-cart' order_item.item.slug %}">
+                                    <i class="fas fa-minus-circle mr-2"></i></a>
+                                {% if order_item.quantity > order_item.item.available_number %}
+                                    <span class="langyu_red-text font-weight-bolder">{{ order_item.quantity }}（库存不足）</span>
+                                    <input id="out_out_stock_flag" value="1" hidden>
+                                {% else %}
+                                    <span>{{ order_item.quantity }}</span>
+                                {% endif %}
+                                <a href="{% url 'order:add-to-cart' order_item.item.slug 1 %}">
+                                    <i class="fas fa-plus-circle ml-2"></i></a>
+                            </td>
+                            <td>
+                                {% if order_item.item.discount_price %}
+                                    <span class="d-inline-flex align-self-center">£{{ order_item.get_total_discount_item_price }}
+                                        <span
+                                                class="badge badge-warning d-inline-flex align-self-center ml-2">打折节省了 £{{ order_item.get_amount_saved }}
+                                        </span>
+                                    </span>
+
+                                {% else %}
+                                    £{{ order_item.get_total_item_price }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <a href="{% url 'order:remove-from-cart' order_item.item.slug %}">
+                                    <i class="fas fa-trash-alt float-right langyu_red-text"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan='5'>购物车中没有商品</td>
+                        </tr>
+                    {% endfor %}
+
+                    {% if object.get_total %}
+                        <tr>
+                            <td colspan="4" style="vertical-align: middle"><b>订单总价</b></td>
+                            <td style="vertical-align: middle">
+                                <b>£{{ object.get_total }}</b>
+
+
+                            </td>
+
+                            <td>
+{#                                <button><a class='btn btn-danger float-right ml-2 align-self-center hidden_my'#}
+{#                                   href={% url "payment:checkout" %}>支付订单</a></button>#}
+                                <a class='btn btn-danger float-right align-self-center hidden_my' style="white-space: nowrap"
+                                   href={% url "payment:checkout" %}>支付</a>
+                            </td>
+
+
+                        </tr>
+
+                    {% endif %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+    <script>
+        var hidden_my = $('.hidden_my');
+
+        var out_out_stock_flag = document.querySelector("input[id=out_out_stock_flag]");
+
+        if (out_out_stock_flag.value === '1') {
+            hidden_my.hide();
+        }
+
+    </script>
+{% endblock extra_scripts %}

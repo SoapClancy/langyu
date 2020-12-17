@@ -1,0 +1,56 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+    <main>
+        <div class="container">
+            <section class="mb-4">
+                <div class="row wow fadeIn">
+                    <div class='col-10 justify-content-center container'>
+                        <h1>{% trans "Sign In" %}</h1>
+
+                        {% get_providers as socialaccount_providers %}
+
+                        {% if socialaccount_providers %}
+                            <p>您可以选择用您的朗御账户或者Google账户登陆朗御。</p>
+{#                            <div class="socialaccount_ballot">#}
+{##}
+{#                                <ul class="socialaccount_providers">#}
+{#                                    {% include "socialaccount/snippets/provider_list.html" with process="login" %}#}
+{#                                </ul>#}
+{##}
+{#                                            <div class="login-or">{% trans 'or' %}</div>#}
+{##}
+{#                            </div>#}
+
+                            {% include "socialaccount/snippets/login_extra.html" %}
+
+                        {% else %}
+                            <p>{% blocktrans %}If you have not created an account yet, then please
+                                <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+                        {% endif %}
+
+                        <form class="login" method="POST" action="{% url 'account_login' %}">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}"
+                                       value="{% url "item:item-list" %}"/>
+                            {% endif %}
+                            <a class="btn btn-danger"
+                               href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                            <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+<a title="Google" class="btn btn-blue" href="/accounts/google/login/?process=login"> <i class="fab fa-google mr-1"></i> 登陆</a>
+
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+{% endblock %}
